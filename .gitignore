@@ -1,0 +1,37 @@
+# Unreal Engine generated / transient
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+
+# Compiled object files
+*.obj
+*.pdb
+*.dll
+*.lib
+*.exe
+*.so
+*.dylib
+
+# Visual Studio / Rider / VS Code
+.vs/
+.vsconfig
+.idea/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.code-workspace
+
+# Generated project files (regenerate from .uproject)
+Makefile
+CMakeLists.txt
+*.xcodeproj
+*.xcworkspace
+
+# OS cruft
+.DS_Store
+Thumbs.db
