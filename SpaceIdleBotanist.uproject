@@ -1,0 +1,26 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.5",
+	"Category": "Game",
+	"Description": "Space Idle Botanist - a hub-and-spoke idle/active hybrid. Active 3D spaceship hub, idle procedural planetary sectors.",
+	"Modules": [
+		{
+			"Name": "SpaceIdleBotanist",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "PCG",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		}
+	]
+}
