@@ -1,0 +1,6 @@
+---,DisplayName,Icon,bIsExportable
+Res.Mineral.Iron,"Iron Ore",,True
+Res.Mineral.Silicate,"Silicate",,True
+Res.Organic.Biomass,"Biomass",,False
+Res.Organic.SeedStock,"Seed Stock",,False
+Res.Energy.Cell,"Energy Cell",,False

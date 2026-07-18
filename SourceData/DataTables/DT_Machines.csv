@@ -1,0 +1,5 @@
+---,DisplayName,MachineClass,YieldResourceRow,YieldPerSecond,BuildCosts,UpgradeCurve,MaxOfflineHours
+Machine.ThermalGenerator,"Thermal Generator",/Game/Sectors/Machines/BP_ThermalGenerator.BP_ThermalGenerator_C,Res.Energy.Cell,0.2,"((Res.Mineral.Iron, 50))",,12
+Machine.MineralExtractor,"Mineral Extractor",/Game/Sectors/Machines/BP_MineralExtractor.BP_MineralExtractor_C,Res.Mineral.Iron,0.5,"((Res.Energy.Cell, 5))",,12
+Machine.SilicateHarvester,"Silicate Harvester",/Game/Sectors/Machines/BP_SilicateHarvester.BP_SilicateHarvester_C,Res.Mineral.Silicate,0.35,"((Res.Energy.Cell, 8),(Res.Mineral.Iron, 20))",,12
+Machine.BotanyPod,"Botany Pod",/Game/Sectors/Machines/BP_BotanyPod.BP_BotanyPod_C,Res.Organic.Biomass,0.25,"((Res.Mineral.Silicate, 30),(Res.Energy.Cell, 3))",,24

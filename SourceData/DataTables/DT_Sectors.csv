@@ -1,0 +1,6 @@
+---,DisplayName,LevelRef,GenParams,BaseSeed,AllowedMachineRows
+Sector.Hub,"Ship Hub",/Game/Hub/L_ShipHub.L_ShipHub,,0,
+Sector.EarthOrbit,"Earth Orbit",/Game/Sectors/EarthOrbit/L_EarthOrbit.L_EarthOrbit,/Game/Sectors/EarthOrbit/GP_EarthOrbit.GP_EarthOrbit,101,"(Machine.ThermalGenerator,Machine.BotanyPod)"
+Sector.MarsSurface,"Mars Surface",/Game/Sectors/MarsSurface/L_MarsSurface.L_MarsSurface,/Game/Sectors/MarsSurface/GP_MarsSurface.GP_MarsSurface,202,"(Machine.MineralExtractor,Machine.BotanyPod,Machine.ThermalGenerator)"
+Sector.AsteroidBelt,"Asteroid Belt",/Game/Sectors/AsteroidBelt/L_AsteroidBelt.L_AsteroidBelt,/Game/Sectors/AsteroidBelt/GP_AsteroidBelt.GP_AsteroidBelt,303,"(Machine.MineralExtractor,Machine.SilicateHarvester)"
+Sector.LunarCrater,"Lunar Crater Alpha",/Game/Sectors/LunarCrater/L_LunarCrater.L_LunarCrater,/Game/Sectors/LunarCrater/GP_LunarCrater.GP_LunarCrater,404,"(Machine.MineralExtractor,Machine.ThermalGenerator)"
