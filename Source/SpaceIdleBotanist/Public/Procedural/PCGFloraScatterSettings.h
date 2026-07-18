@@ -51,4 +51,6 @@ class FPCGFloraScatterElement : public IPCGElement
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;
+	// Loads the soft GenParams asset and allocates point data; keep execution on the game thread.
+	virtual bool CanExecuteOnlyOnMainThread(FPCGContext* Context) const override { return true; }
 };

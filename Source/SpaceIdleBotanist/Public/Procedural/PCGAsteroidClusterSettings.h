@@ -50,10 +50,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Settings, meta = (PCG_Overridable))
 	FFloatInterval AsteroidScaleRange = FFloatInterval(0.5f, 3.0f);
+
+	/** Half-extents of the generation box (cm) when no spatial input is connected. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Settings, meta = (PCG_Overridable))
+	FVector FallbackFieldExtents = FVector(100000.0, 100000.0, 20000.0);
 };
 
 class FPCGAsteroidClusterElement : public IPCGElement
 {
 protected:
 	virtual bool ExecuteInternal(FPCGContext* Context) const override;
+	// Point data is allocated with NewObject; keep execution on the game thread.
+	virtual bool CanExecuteOnlyOnMainThread(FPCGContext* Context) const override { return true; }
 };
