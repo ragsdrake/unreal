@@ -50,29 +50,56 @@ bool AIdleMachineBase::CanInteract_Implementation(const APawn* InstigatorPawn) c
 
 int64 AIdleMachineBase::GetPendingYield() const
 {
-	if (!bDefResolved || !YieldComponent)
+	if (!bDefResolved)
 	{
 		return 0;
 	}
-	return YieldComponent->ComputePendingYield(CachedDef.YieldPerSecond, CachedDef.MaxOfflineHours);
+
+	UIdleEconomySubsystem* Economy = nullptr;
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		Economy = GameInstance->GetSubsystem<UIdleEconomySubsystem>();
+	}
+
+	if (Economy && DeployedRecordIndex != INDEX_NONE)
+	{
+		const TArray<FDeployedMachineRecord>& Records = Economy->GetDeployedMachines();
+		return Records.IsValidIndex(DeployedRecordIndex) ? Economy->GetPendingYield(Records[DeployedRecordIndex]) : 0;
+	}
+
+	return YieldComponent ? YieldComponent->ComputePendingYield(CachedDef.YieldPerSecond, CachedDef.MaxOfflineHours) : 0;
 }
 
 int64 AIdleMachineBase::CollectPendingYield()
 {
+	if (!bDefResolved)
+	{
+		return 0;
+	}
+
+	UIdleEconomySubsystem* Economy = nullptr;
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		Economy = GameInstance->GetSubsystem<UIdleEconomySubsystem>();
+	}
+
+	if (Economy && DeployedRecordIndex != INDEX_NONE)
+	{
+		return Economy->CollectYield(DeployedRecordIndex);
+	}
+
 	const int64 Pending = GetPendingYield();
 	if (Pending <= 0)
 	{
 		return 0;
 	}
-
-	if (UGameInstance* GameInstance = GetGameInstance())
+	if (Economy)
 	{
-		if (UIdleEconomySubsystem* Economy = GameInstance->GetSubsystem<UIdleEconomySubsystem>())
-		{
-			Economy->AddResource(CachedDef.YieldResourceRow, Pending);
-		}
+		Economy->AddResource(CachedDef.YieldResourceRow, Pending);
 	}
-
-	YieldComponent->MarkCollected();
+	if (YieldComponent)
+	{
+		YieldComponent->MarkCollected();
+	}
 	return Pending;
 }

@@ -33,6 +33,11 @@ bool USIBGameInstance::WriteSaveGame()
 		return false;
 	}
 
+	if (const UIdleEconomySubsystem* Economy = GetSubsystem<UIdleEconomySubsystem>())
+	{
+		Economy->FlushToSave(ActiveSaveGame);
+	}
+
 	ActiveSaveGame->LastSessionUtcTicks = FDateTime::UtcNow().GetTicks();
 	const bool bSaved = UGameplayStatics::SaveGameToSlot(ActiveSaveGame, SaveSlotName, SaveUserIndex);
 	if (!bSaved)

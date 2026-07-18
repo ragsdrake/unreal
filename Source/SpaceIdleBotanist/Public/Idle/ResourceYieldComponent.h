@@ -23,6 +23,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SIB|Yield")
 	int64 ComputePendingYield(double YieldPerSecond, float MaxOfflineHours) const;
 
+	/** Single source of truth for the accrual formula; also used by UIdleEconomySubsystem for offline records. */
+	UFUNCTION(BlueprintPure, Category = "SIB|Yield")
+	static int64 ComputeYieldFromTicks(int64 InLastCollectUtcTicks, double YieldPerSecond, float MaxOfflineHours);
+
 	/** Resets the accrual anchor to now. Call after crediting the ledger. */
 	UFUNCTION(BlueprintCallable, Category = "SIB|Yield")
 	void MarkCollected();

@@ -3,12 +3,16 @@
 #include "UI/SectorOverviewWidget.h"
 
 #include "Core/IdleEconomySubsystem.h"
+#include "Idle/PlanetarySector.h"
+#include "Kismet/GameplayStatics.h"
 
-void USectorOverviewWidget::RequestDeployMachine(FName MachineRow)
+void USectorOverviewWidget::RequestDeployMachine(FName MachineRow, const FTransform& SpawnTransform)
 {
-	// Phase 3: validate MachineRow against the sector's AllowedMachineRows, spend
-	// FMachineDef.BuildCosts via TrySpend, then spawn the machine and register it
-	// with the APlanetarySector.
+	if (APlanetarySector* Sector =
+			Cast<APlanetarySector>(UGameplayStatics::GetActorOfClass(this, APlanetarySector::StaticClass())))
+	{
+		Sector->TryDeployMachine(MachineRow, SpawnTransform);
+	}
 }
 
 void USectorOverviewWidget::SetAutomatedMineralExport(bool bEnabled)

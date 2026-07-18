@@ -18,7 +18,7 @@ class SPACEIDLEBOTANIST_API USectorOverviewWidget : public USIBWidgetBase
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "SIB|UI")
-	void RequestDeployMachine(FName MachineRow);
+	void RequestDeployMachine(FName MachineRow, const FTransform& SpawnTransform);
 
 	UFUNCTION(BlueprintCallable, Category = "SIB|UI")
 	void SetAutomatedMineralExport(bool bEnabled);

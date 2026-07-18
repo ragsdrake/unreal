@@ -19,12 +19,17 @@ void UResourceYieldComponent::BeginPlay()
 
 int64 UResourceYieldComponent::ComputePendingYield(double YieldPerSecond, float MaxOfflineHours) const
 {
-	if (LastCollectUtcTicks <= 0 || YieldPerSecond <= 0.0)
+	return ComputeYieldFromTicks(LastCollectUtcTicks, YieldPerSecond, MaxOfflineHours);
+}
+
+int64 UResourceYieldComponent::ComputeYieldFromTicks(int64 InLastCollectUtcTicks, double YieldPerSecond, float MaxOfflineHours)
+{
+	if (InLastCollectUtcTicks <= 0 || YieldPerSecond <= 0.0)
 	{
 		return 0;
 	}
 
-	const FTimespan Delta = FDateTime::UtcNow() - FDateTime(LastCollectUtcTicks);
+	const FTimespan Delta = FDateTime::UtcNow() - FDateTime(InLastCollectUtcTicks);
 	// Negative deltas (OS clock moved backward) and over-cap offline stretches are clamped (RISK-003).
 	const double MaxSeconds = static_cast<double>(MaxOfflineHours) * FTimespan::FromHours(1.0).GetTotalSeconds();
 	const double Seconds = FMath::Clamp(Delta.GetTotalSeconds(), 0.0, MaxSeconds);

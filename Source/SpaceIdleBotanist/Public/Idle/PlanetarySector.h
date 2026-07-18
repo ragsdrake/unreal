@@ -21,6 +21,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SIB|Sector")
 	FRandomStream GetSeededStream(FName Salt) const;
 
+	/** Pushes the sector seed into every managed PCG component (salted per actor) and regenerates. */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Sector")
+	void TriggerGeneration();
+
+	/** Spends FMachineDef.BuildCosts, spawns the machine, and persists a deploy record. Returns nullptr on failure. */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Sector")
+	AIdleMachineBase* TryDeployMachine(FName MachineRow, const FTransform& SpawnTransform);
+
+	/** Respawns this sector's machines from the save records (no costs charged). */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Sector")
+	void RestoreDeployedMachines();
+
 	UFUNCTION(BlueprintCallable, Category = "SIB|Sector")
 	void RegisterMachine(AIdleMachineBase* Machine);
 
@@ -38,6 +50,16 @@ public:
 	FName GetSectorRowName() const { return SectorRowName; }
 
 protected:
+	/** Extra generation hook for Blueprint children (skybox variation, ambience seeds, ...). */
+	UFUNCTION(BlueprintImplementableEvent, Category = "SIB|Sector")
+	void OnGenerationTriggered(int32 Seed);
+
+	AIdleMachineBase* SpawnMachineInternal(FName MachineRow, const FTransform& SpawnTransform, int32 DeployedRecordIndex);
+
+	/** Level actors carrying UPCGComponents that this sector seeds and regenerates. */
+	UPROPERTY(EditInstanceOnly, Category = "SIB|Sector")
+	TArray<TObjectPtr<AActor>> ManagedPCGActors;
+
 	/** DT_Sectors row this level represents. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SIB|Sector")
 	FName SectorRowName;

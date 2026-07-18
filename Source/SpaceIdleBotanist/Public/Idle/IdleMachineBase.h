@@ -34,6 +34,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SIB|Machine")
 	int64 GetPendingYield() const;
 
+	/** Must be set before FinishSpawning so BeginPlay can resolve the row. */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Machine")
+	void SetMachineDefRow(const FDataTableRowHandle& InRow) { MachineDefRow = InRow; }
+
+	/**
+	 * Links this actor to its FDeployedMachineRecord in UIdleEconomySubsystem. When linked, the
+	 * record is the single accrual authority (prevents double-crediting against offline progress);
+	 * INDEX_NONE (hand-placed machines) falls back to the local yield component.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Machine")
+	void SetDeployedRecordIndex(int32 InIndex) { DeployedRecordIndex = InIndex; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -55,4 +67,7 @@ protected:
 
 	UPROPERTY(Transient)
 	bool bDefResolved = false;
+
+	UPROPERTY(Transient)
+	int32 DeployedRecordIndex = INDEX_NONE;
 };

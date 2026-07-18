@@ -6,6 +6,7 @@
 #include "Engine/DataTable.h"
 #include "SIBMachineDef.generated.h"
 
+class AIdleMachineBase;
 class UCurveFloat;
 
 /** One row per deployable machine type in DT_Machines. */
@@ -16,6 +17,10 @@ struct SPACEIDLEBOTANIST_API FMachineDef : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SIB|Machine")
 	FText DisplayName;
+
+	/** Actor spawned on deploy; a Blueprint child of AIdleMachineBase. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SIB|Machine")
+	TSoftClassPtr<AIdleMachineBase> MachineClass;
 
 	/** Row name in DT_Resources this machine produces. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SIB|Machine")

@@ -9,6 +9,9 @@
 #include "Data/SIBDeployedMachineRecord.h"
 #include "IdleEconomySubsystem.generated.h"
 
+class USIBSaveGame;
+struct FMachineDef;
+
 /**
  * The idle engine. Owns the runtime resource ledger; all accrual is computed from
  * FDateTime UTC timestamp deltas on demand. A low-rate FTimerManager heartbeat only
@@ -43,11 +46,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SIB|Economy")
 	int64 CollectYield(int32 DeployedMachineIndex);
 
+	/** Appends a deploy record and returns its stable index (records are append-only per session). */
+	UFUNCTION(BlueprintCallable, Category = "SIB|Economy")
+	int32 RegisterDeployedMachine(const FDeployedMachineRecord& Record);
+
+	UFUNCTION(BlueprintPure, Category = "SIB|Economy")
+	const TArray<FDeployedMachineRecord>& GetDeployedMachines() const { return DeployedMachines; }
+
+	/** Copies the runtime ledger and machine records into the save object; called by USIBGameInstance before writing. */
+	void FlushToSave(USIBSaveGame* Save) const;
+
 	UPROPERTY(BlueprintAssignable, Category = "SIB|Economy")
 	FOnResourceLedgerUpdated OnResourceLedgerUpdated;
 
+	UPROPERTY(BlueprintAssignable, Category = "SIB|Economy")
+	FOnMachineDeployed OnMachineDeployed;
+
 protected:
 	void HandleHeartbeat();
+
+	const FMachineDef* ResolveMachineDef(FName MachineRow) const;
 
 	/** UI refresh cadence, seconds. Set in DefaultGame.ini under [/Script/SpaceIdleBotanist.IdleEconomySubsystem]. */
 	UPROPERTY(Config)
@@ -55,6 +73,9 @@ protected:
 
 	UPROPERTY(Transient)
 	TMap<FName, int64> RuntimeLedger;
+
+	UPROPERTY(Transient)
+	TArray<FDeployedMachineRecord> DeployedMachines;
 
 	FTimerHandle HeartbeatHandle;
 };

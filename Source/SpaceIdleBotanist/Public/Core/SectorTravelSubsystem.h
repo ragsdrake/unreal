@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SIB|Travel")
 	FName GetPendingSectorRow() const { return PendingSectorRow; }
 
+	/** Called by ASIBGameModeSector::StartPlay once the destination level is up. */
+	void NotifyArrivedInSector();
+
 	UPROPERTY(BlueprintAssignable, Category = "SIB|Travel")
 	FOnJumpStateChanged OnJumpStateChanged;
 
