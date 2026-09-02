@@ -55,7 +55,119 @@ headers are generated in Phase 2 against this contract.
 
 ---
 
-## 2. Required C++ Base Classes
+## 2. Layer Architecture Diagram
+
+Solid arrows are direct references/calls; dashed arrows are delegate broadcasts (no polling).
+DataTables and DataAssets are read-only configuration, never mutated at runtime.
+
+```mermaid
+flowchart TB
+    subgraph DATA["Data — FTableRowBase / DataAssets (read-only config)"]
+        DT_Res["DT_Resources\nFResourceDef"]
+        DT_Mach["DT_Machines\nFMachineDef"]
+        DT_Sect["DT_Sectors\nFSectorDef"]
+        GenParams["USectorGenParams"]
+        Delegates["SIBDelegates.h"]
+    end
+
+    subgraph CORE["Core — Session & Subsystems"]
+        GI["USIBGameInstance"]
+        Save["USIBSaveGame"]
+        Economy["UIdleEconomySubsystem\n(ledger, 1 Hz heartbeat)"]
+        Travel["USectorTravelSubsystem\n(jump state machine)"]
+        GMHub["ASIBGameModeHub"]
+        GMSector["ASIBGameModeSector"]
+        PC["ASIBPlayerController"]
+    end
+
+    subgraph HUB["Hub — 3D Active"]
+        Char["ASIBCharacter"]
+        Interact["AInteractableBase"]
+        Console["APilotConsole"]
+        Lab["AGeneLab"]
+        ShipStatus["UShipStatusComponent"]
+    end
+
+    subgraph IDLE["Idle — Spokes"]
+        Sector["APlanetarySector"]
+        Machine["AIdleMachineBase"]
+        Yield["UResourceYieldComponent"]
+    end
+
+    subgraph PROC["Procedural"]
+        RandLib["USIBRandomLibrary"]
+        PCGAst["UPCGAsteroidClusterSettings"]
+        PCGFlora["UPCGFloraScatterSettings"]
+    end
+
+    subgraph UI["UI — Delegate-Driven Widgets"]
+        WBase["USIBWidgetBase"]
+        WShip["UShipStatusWidget"]
+        WNav["UNavigationWidget"]
+        WSector["USectorOverviewWidget"]
+    end
+
+    subgraph IFACE["Interfaces"]
+        Interactable["ISIBInteractable"]
+    end
+
+    GI --> Save
+    GI --> Economy
+    GI --> Travel
+    GI -.load rows.-> DT_Res
+    GI -.load rows.-> DT_Mach
+    GI -.load rows.-> DT_Sect
+
+    Economy --> Save
+    Economy -. FOnResourceLedgerUpdated .-> WSector
+    Economy -. FOnMachineDeployed .-> WSector
+    Economy --> DT_Mach
+
+    Travel --> DT_Sect
+    Travel -. FOnJumpStateChanged .-> WNav
+    Travel --> GMSector
+
+    GMSector --> Sector
+    GMHub --> Char
+    PC --> Char
+
+    Sector --> Machine
+    Sector --> RandLib
+    Sector --> PCGAst
+    Sector --> PCGFlora
+    Sector --> Economy
+
+    Machine --> Yield
+    Machine --> DT_Mach
+    Machine -.implements.-> Interactable
+    Console -.implements.-> Interactable
+    Lab -.implements.-> Interactable
+    Interact -.implements.-> Interactable
+
+    Char --> Interactable
+    Char --> ShipStatus
+    Console --> Travel
+    Lab --> Economy
+
+    PCGAst --> RandLib
+    PCGFlora --> RandLib
+    PCGFlora --> GenParams
+
+    ShipStatus -. FOnHullChanged / FOnAutopilotChanged .-> WShip
+    WBase --> Economy
+    WBase --> ShipStatus
+    WShip --> WBase
+    WNav --> WBase
+    WSector --> WBase
+
+    CORE -.declares.-> Delegates
+    HUB -.declares.-> Delegates
+    IDLE -.declares.-> Delegates
+```
+
+---
+
+## 3. Required C++ Base Classes
 
 ### 2.1 Core — `Source/SpaceIdleBotanist/Public/Core/`
 
@@ -126,7 +238,7 @@ styling, and animation. All display strings are `FText` in English.
 
 ---
 
-## 3. Enforcement of Banned Outcomes
+## 4. Enforcement of Banned Outcomes
 
 | Ban | Architectural enforcement |
 |---|---|
